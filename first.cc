@@ -19,6 +19,7 @@
 #include "ns3/network-module.h"
 #include "ns3/point-to-point-module.h"
 
+#include "ns3/netanim-module.h"
 // Default Network Topology
 //
 //       10.1.1.0
@@ -72,6 +73,13 @@ main(int argc, char* argv[])
     ApplicationContainer clientApps = echoClient.Install(nodes.Get(0));
     clientApps.Start(Seconds(2.0));
     clientApps.Stop(Seconds(10.0));
+    
+//Para el trazo de ascii 
+AsciiTraceHelper ascii;
+pointToPoint.EnableAsciiAll(ascii.CreateFileStream("512.tr"));
+
+//NetAnim
+AnimationInterface anim("p2p.xml");
 
     Simulator::Run();
     Simulator::Destroy();
