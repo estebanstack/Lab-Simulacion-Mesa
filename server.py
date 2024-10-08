@@ -52,9 +52,10 @@ class TaskAgent(Agent):
 
 # Modelo del sistema de colas
 class QueueServerModel(Model):
-    def __init__(self, num_servers, task_arrival_rate, max_steps):
+    def __init__(self, num_servers, task_arrival_rate, task_service_rate, max_steps):
         self.num_servers = num_servers
         self.task_arrival_rate = task_arrival_rate  # Tasa de llegada de tareas
+        self.task_service_rate = task_service_rate  # Tasa de servicio de las tareas
         self.max_steps = max_steps
         self.schedule = RandomActivation(self)
         self.running = True
@@ -76,7 +77,7 @@ class QueueServerModel(Model):
         """Avanza el modelo un paso."""
         # Crear nuevas tareas de acuerdo con la tasa de llegada
         if random.random() < self.task_arrival_rate:
-            service_time = random.randint(2, 10)  # Tiempo de servicio aleatorio
+            service_time = int(random.expovariate(self.task_service_rate))  # Tiempo de servicio basado en la tasa
             new_task = TaskAgent(self.current_step, self, service_time)
             self.schedule.add(new_task)
 
@@ -111,17 +112,19 @@ class QueueServerModel(Model):
         """Devuelve el número de servidores ocupados."""
         return sum(1 for server in self.servers if server.busy)
 
+
 # Ejemplo de uso
 if __name__ == "__main__":
     num_servers = 3  # Número de servidores
-    task_arrival_rate = 0.7  # Tasa de llegada de tareas
+    task_arrival_rate = 0.9  # Tasa de llegada de tareas
+    task_service_rate = 0.4  # Tasa de servicio de tareas (inverso del tiempo promedio)
     max_steps = 100  # Número máximo de pasos
 
-    model = QueueServerModel(num_servers, task_arrival_rate, max_steps)
+    model = QueueServerModel(num_servers, task_arrival_rate, task_service_rate, max_steps)
 
     while model.running:
         model.step()
 
     # Mostrar algunas estadísticas al final
     print("Longitudes finales de las colas por servidor:", model.get_queue_lengths())
-    print("Número de servidores ocupados al final:", model.get_busy_servers())
+    print("Número de servidores ocupados al final:", model.get_busy_servers()) 
