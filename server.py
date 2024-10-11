@@ -156,8 +156,8 @@ class QueueServerModel(Model):
 # Ejemplo de uso
 if __name__ == "__main__":
     num_servers = 3  # Número de servidores
-    task_arrival_rate = 0.7  # Tasa de llegada de tareas
-    task_service_rate = 0.2  # Tasa de servicio de tareas (inverso del tiempo promedio)
+    task_arrival_rate = 0.9  # Tasa de llegada de tareas
+    task_service_rate = 0.4  # Tasa de servicio de tareas (inverso del tiempo promedio)
     max_steps = 100  # Número máximo de pasos
 
     model = QueueServerModel(num_servers, task_arrival_rate, task_service_rate, max_steps)
